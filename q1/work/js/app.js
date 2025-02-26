@@ -11,8 +11,8 @@ $(function(){
 
 //q3にクリックイベントを追加
 $("#q3").on("click", function(){
-  //そのイベントをクリックすると３秒かけてフェードアウトする。ｊｓでは時間をミリ秒で表すので3000ミリ秒＝3E3となる。
-  $(this).fadeOut(3E3)
+  //そのイベントをクリックすると３秒かけてフェードアウトする。ｊｓでは時間をミリ秒で表すので3秒＝3000ミリ秒
+  $(this).fadeOut(3000)
 });
 
 //q4にクリックイベントを追加
@@ -36,7 +36,7 @@ $("#q5").on("click", function(){
 //q6にクリックイベントを追加
 $("#q6").on("click", function(){
   //クリックでアニメーションを追加、2秒かけてmargin-top:100、margin-left:100の場所に動く。
-  $(this).animate({"margin-top":100, "margin-left":100},2E3)
+  $(this).animate({"margin-top":100, "margin-left":100},2000)
 });
 
 

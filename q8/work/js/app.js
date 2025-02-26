@@ -1,65 +1,103 @@
 
-
-
 $(function () {
+  //入力した内容をsearchWordに代入
+  let searchWord = "";
+  //pageCountの初期値は１ページ目から
+  let pageCount = 1;
+  //APIから返されたレスポンスを検索結果に表示する
+  function displayResult(response){
+    //.messageのクラス要素を削除する
   $(".message").remove();
+  //APIから返されたレスポンスにitemsと長さが０より大きいかどうか（１個以上結果が出るかどうか）
   if (response[0].items && response[0].items.length > 0) {
-    $.each(response[0].items, function (index,item){
-      let title = item.title || "\u30bf\u30a4\u30c8\u30eb\u4e0d\u660e"
-      let creator = item["dc:creator"] || "\u4f5c\u8005\u4e0d\u660e"
-      let publisher = item["dc:publisher"] ? item["dc:publisher"][0] : "\u51fa\u7248\u793e\u4e0d\u660e"
+    //レスポンスで出た結果（items,index)を処理
+    $.each(response[0].items, function (index, item){
+      //item.titleが存在する場合はその値を、存在しない場合は”タイトル不明”を代入
+      let title = item.title || "タイトル不明"
+      //item.["dc:creator"]が存在する場合は作成者名を取得し、存在しない場合は”作成者不明”を設定
+      let creator = item["dc:creator"] || "作成者不明"
+      //item["dc:publisher"]が存在し、配列であれば出版社名を取得し、存在しない場合は”出版社不明”を設定
+      let publisher = item["dc:publisher"] ? item["dc:publisher"][0] : "出版社不明"
+      //item.link["@id"]が存在する場合はそのリンクを使用、存在しない場合は”＃”を設定
       let link = item.link["@id"] || "#";
-
+      //検索結果をHTMLのリスト<li>にそれぞれの変数を埋め込む
       let listItem = `
       <li class="lists-item">
         <div class="list-inner">
-          <p>\u30bf\u30a4\u30cb:${title}</p>
-          <p>\u4f5c\u8005:${creator}</p>
-          <p>\u51fa\u7248\u793e:${publisher}</p>
-          <a href="${link}" target="_blank">\u66f8\u7c4d\u60c5\u5831</a>
+          <p>タイトル:${title}</p>
+          <p>作成者:${creator}</p>
+          <p>出版社:${publisher}</p>
+          <a href="${link}" target="_blank">書籍情報</a>
         </div>
       </li>
-    `;
+      `;
+      //.listsのクラス要素の最初にlistItemを挿入する
     $(".lists").prepend(listItem);
         });
+        //検索結果がなかったら、”検索結果が見つかりませんでした。別のキーワードで検索してください。”と表示する。
       } else {
-        $(".lists").before('<div class="message">)\u691c\u7d22\u7d50\u679c\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f\u3002<br>\u5225\u306e\u30ad\u30fc\u30ef\u30fc\u30c9\u3067\u691c\u7d22\u3057\u3066\u4e0b\u3055\u3044\u3002</div>');
+        $(".lists").before('<div class="message">)検索結果が見つかりませんでした。<br>別のキーワードで検索してください。</div>');
       }
+    }
+    //AJAXリクエストでエラーが出たとき
       function handleError(error) {
+        //.list要素を空にして前の結果も削除
         $(".lists").empty();
+        //.messageクラス要素削除
         $(".message").remove();
+        //error.status ===0は通信失敗という意味なので、”正常に通信できませんでした。インターネットの接続の確認をしてください。”と表示
         if (error.status ===0) {
-          showErrorMessage("\u6b63\u5e38\u306b\u901a\u4fe1\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002<br>\u30a4\u30f3\u30bf\u30fc\u30cd\u30c3\u30c8\u306e\u63a5\u7d9a\u3092\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002");
+          showErrorMessage("正常に通信できませんでした。<br>インターネットの接続の確認をしてください。");
+          //error.status === 400は無効な検索キーワードだったという意味なので”検索キーワードが有効ではありません。１文字以上で検索してください。”と表示
         } else if (error.status === 400) {
-          showErrorMessage("\u691c\u7d22\u30ad\u30fc\u30ef\u30fc\u30c9\u304c\u6709\u52b9\u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3002<br>\uff11\u6587\u5b57\u4ee5\u4e0a\u3067\u691c\u7d22\u3057\u3066\u304f\u3060\u3055\u3044\u3002");
+          showErrorMessage("検索キーワードが有効ではありません。<br>１文字以上で検索してください。");
+          //その他のエラーは”予期せぬエラーが起きました。再読み込みをおこなってください。”と表示
         } else {
-          showErrorMessage("\u4e88\u671f\u305b\u306c\u30a8\u30e9\u30fc\u304c\u8d77\u304d\u307e\u3057\u305f\u3002<br>\u518d\u8aad\u307f\u8fbc\u307f\u3092\u884c\u3063\u3066\u304f\u3060\u3055\u3044\u3002");
+          showErrorMessage("予期せぬエラーが起きました。<br>再読み込みをおこなってください。");
         }
       }
+        //.search-btnがクリックされたときにイベント
         $(".search-btn").on("click", function () {
+          //search-inputに入力された値を取得
           let inputWord = $("#search-input").val();
+          //入力された値と検索ワードが異なるとき
           if(inputWord !== searchWord) {
+            //ページ番号を１にして
           pageCount = 1;
+          //新しい検索ワードを入力された値にする
           searchWord = inputWord;
+          //検索ワードが同じの時はページ番号を追加
           } else{
           pageCount++;
           }
+          //AJAXリクエストの設定を定義とAPIのURLで'searchWord'とpageCountを追加
         const settings = {
           "url": `https://ci.nii.ac.jp/books/opensearch/search?title=${searchWord}&format=json&p=${pageCount}&count=20`,
           "method": "GET",
         };
+        //settingで設定したものをAJAXリクエストで送信、成功したらAPIから'response'で返ってくる
           $.ajax(settings).done(function (response) {
+            //responseデータは@graphというプロパティから取得して'result'に入れる
             const result = response['@graph'];
+            //resultをdisplayResult関数に渡して画面に表示
             displayResult(result)
+            //AJAXリクエストが失敗したらerrを呼び出す
               }).fail(function (err) {
-              displayError(err)
+                //handleError（エラーハンドリング。プログラムの処理中に処理が妨げられるとその処理をエラーとして対処する）を行う
+              handleError(err)
         });
       });
+      //".reset-btnを"click"したときのイベント
       $(".reset-btn").on("click", function() {
+        //ページカウントを１にする
         pageCount = 1;
+        //searchWordを空にする
         searchWord = "";
+        //.listsを空にする（消去する）
         $(".lists").empty();
+        //.messageクラスの要素を削除
         $(".message").remove();
+        //search-inputに入力されていたものを空にする
         $("#search-input").val("");
       });
     });
