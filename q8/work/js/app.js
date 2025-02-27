@@ -9,38 +9,45 @@ $(function () {
     //.messageのクラス要素を削除する
   $(".message").remove();
   //APIから返されたレスポンスにitemsと長さが０より大きいかどうか（１個以上結果が出るかどうか）
-  if (response[0].items && response[0].items.length > 0) {
-    //レスポンスで出た結果（items,index)を処理
-    $.each(response[0].items, function (index, item){
-      //item.titleが存在する場合はその値を、存在しない場合は”タイトル不明”を代入
-      let title = item.title || "タイトル不明"
-      //item.["dc:creator"]が存在する場合は作成者名を取得し、存在しない場合は”作成者不明”を設定
-      let creator = item["dc:creator"] || "作成者不明"
-      //item["dc:publisher"]が存在し、配列であれば出版社名を取得し、存在しない場合は”出版社不明”を設定
-      let publisher = item["dc:publisher"] ? item["dc:publisher"][0] : "出版社不明"
-      //item.link["@id"]が存在する場合はそのリンクを使用、存在しない場合は”＃”を設定
-      let link = item.link["@id"] || "#";
-      //検索結果をHTMLのリスト<li>にそれぞれの変数を埋め込む
-      let listItem = `
-      <li class="lists-item">
-        <div class="list-inner">
-          <p>タイトル:${title}</p>
-          <p>作成者:${creator}</p>
-          <p>出版社:${publisher}</p>
-          <a href="${link}" target="_blank">書籍情報</a>
-        </div>
-      </li>
-      `;
-      //.listsのクラス要素の最初にlistItemを挿入する
-    $(".lists").prepend(listItem);
-        });
+    if (response[0].items && response[0].items.length > 0) {
+      //レスポンスで出た結果（items,index)を処理
+      $.each(response[0].items, function (index, item){
+        //item.titleが存在する場合はその値を、存在しない場合は”タイトル不明”を代入
+        const title = item.title || "タイトル不明"
+        //item.["dc:creator"]が存在する場合は作成者名を取得し、存在しない場合は”作成者不明”を設定
+        const creator = item["dc:creator"] || "作成者不明"
+        //item["dc:publisher"]が存在し、配列であれば出版社名を取得し、存在しない場合は”出版社不明”を設定
+        const publisher = item["dc:publisher"] ? item["dc:publisher"][0] : "出版社不明"
+        //item.link["@id"]が存在する場合はそのリンクを使用、存在しない場合は”＃”を設定
+        const link = item.link["@id"] || "#";
+        //検索結果をHTMLのリスト<li>にそれぞれの変数を埋め込む
+        const listItem = `
+        <li class="lists-item">
+          <div class="list-inner">
+            <p>タイトル:${title}</p>
+            <p>作成者:${creator}</p>
+            <p>出版社:${publisher}</p>
+            <a href="${link}" target="_blank">書籍情報</a>
+          </div>
+        </li>
+        `;
+        //.listsのクラス要素の最初にlistItemを挿入する
+        $(".lists").prepend(listItem);
+      });
         //検索結果がなかったら、”検索結果が見つかりませんでした。別のキーワードで検索してください。”と表示する。
-      } else {
-        $(".lists").before('<div class="message">)検索結果が見つかりませんでした。<br>別のキーワードで検索してください。</div>');
+    } else {
+        $(".lists").before('<div class="message">検索結果が見つかりませんでした。<br>別のキーワードで検索してください。</div>');
       }
-    }
-    //AJAXリクエストでエラーが出たとき
+  }
+      //showErrorMessageという関数を定義、messageという引数を受け取る
+      function showErrorMessage(message) {
+        //.listsのクラス要素を取得して、検索結果のリストの前にメッセージを表示するHTMLを追加
+      $(".lists").before(`<div class="message">${message}</div>`);
+      }
+      //AJAXリクエストでエラーが出たとき
       function handleError(error) {
+         // エラーの詳細を表示
+        console.log(error);
         //.list要素を空にして前の結果も削除
         $(".lists").empty();
         //.messageクラス要素削除
