@@ -57,15 +57,15 @@ mouseleave:function(){$(this).removeClass("large")
 //q9のliにクリックでイベントを追加する
 $("#q9 li").on("click", function(){
 //index()で順番を取得し、それぞれのliをクリックしたとき、０からアラートで表示される
-  const a = $(this).index(); alert(a)
+  const activateData = $(this).index(); alert(activateData)
 });
 
 //q10にクリックでイベントを追加する
 $("#q10 li").on("click", function(){
   //indexでq10のliの順番を取得し、クリックしたときに
-  const a = $(this).index();
+  const expand = $(this).index();
   //consoleにq11とliのリストを取得し、表示する
-  console.log($("#q11 li").eq(a));
+  console.log($("#q11 li").eq(expand));
   //q11、liを取得しそのリストにaddClassで"large-text"のクラス属性を追加し、cssで記述された"large-text"が実行される。
-  $("#q11 li").eq(a).addClass("large-text")})
+  $("#q11 li").eq(expand).addClass("large-text")})
 });
