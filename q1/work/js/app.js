@@ -61,13 +61,14 @@ $(function () {
   //q9のliにクリックでイベントを追加する
   $("#q9 li").on("click", function () {
     //index()で順番を取得し、それぞれのliをクリックしたとき、０からアラートで表示される
-    const activateData = $(this).index(); alert(activateData)
+    const activateData = $(this).index();
+    alert(activateData)
   });
 
   //q10にクリックでイベントを追加する
   $("#q10 li").on("click", function () {
     //indexでq10のliの順番を取得し、クリックしたときに
-    const expand = $(this).index();
+    const index = $(this).index();
     //consoleにq11とliのリストを取得し、表示する
     console.log($("#q11 li").eq(expand));
     //q11、liを取得しそのリストにaddClassで"large-text"のクラス属性を追加し、cssで記述された"large-text"が実行される。

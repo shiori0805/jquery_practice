@@ -66,7 +66,7 @@ $(function () {
   //.search-btnがクリックされたときにイベント
   $(".search-btn").on("click", function () {
     //search-inputに入力された値を取得
-    let inputWord = $("#search-input").val();
+    const inputWord = $("#search-input").val();
     //入力された値と検索ワードが異なるとき
     if (inputWord !== searchWord) {
       //ページ番号を１にして

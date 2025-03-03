@@ -5,18 +5,18 @@ $(function () {
   //select-boxに入力内容が変更されたときのイベントを追加
   $(".select-box").on("change", function () {
     //ingredientTypeに選択された値を
-    let ingredientType = $(this).val()
+    const ingredientType = $(this).val()
     //foodItemsにfood-listのli要素を代入
-    let foodItems = $(".food-list li");
+    const foodItems = $(".food-list li");
     //ingredientTypeがallの時、
     if (ingredientType === "all") {
       //すべてのliを表示
       foodStuffs.show();
     } else {
       //変数foodBoxにfoodItemsの文字列（番号）を代入し、ループ処理させる
-      for (let foodBox = 0; foodBox < foodItems.length; foodBox++) {
+      for (let index = 0; index < foodItems.length; index++) {
         //itemにfoodItems[foodBox]を代入
-        let item = $(foodItems[foodBox]);
+        let item = $(foodItems[index]);
         //itemからcategory-typeのデータ属性を取得
         let categoryType = item.data("category-type");
         //ingredientTypeの値が該当のcategoryTypeだったとき、itemを表示させ、それ以外は非表示にする
