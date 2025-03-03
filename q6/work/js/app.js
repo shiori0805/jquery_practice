@@ -14,7 +14,7 @@ $(function () {
       foodStuffs.show();
     } else {
       //変数foodBoxにfoodItemsの文字列（番号）を代入し、ループ処理させる
-      for (let index = 0; index < foodItems.length; index++) {
+      for (const index = 0; index < foodItems.length; index++) {
         //itemにfoodItems[foodBox]を代入
         let item = $(foodItems[index]);
         //itemからcategory-typeのデータ属性を取得

@@ -72,6 +72,6 @@ $(function () {
     //consoleにq11とliのリストを取得し、表示する
     console.log($("#q11 li").eq(expand));
     //q11、liを取得しそのリストにaddClassで"large-text"のクラス属性を追加し、cssで記述された"large-text"が実行される。
-    $("#q11 li").eq(expand).addClass("large-text")
+    $("#q11 li").eq(index).addClass("large-text")
   })
 });
