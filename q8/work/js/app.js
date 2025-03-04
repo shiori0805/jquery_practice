@@ -77,11 +77,17 @@ $(function () {
     } else {
       pageCount++;
     }
-    //AJAXリクエストの設定を定義とAPIのURLで'searchWord'とpageCountを追加
+    //API のベースURLを定数化
+    const API_base_URL = "https://ci.nii.ac.jp/books/opensearch/search";
+    const response_FORMAT = "json"; // 取得フォーマット
+    const items_Page = 20; // 1ページあたりの表示件数
+
+    //APIのリクエスト設定
     const settings = {
-      "url": `https://ci.nii.ac.jp/books/opensearch/search?title=${searchWord}&format=json&p=${pageCount}&count=20`,
+      "url": `${API_base_URL}?title=${searchWord}&format=${response_FORMAT}&p=${pageCount}&count=${items_Page}`,
       "method": "GET",
     };
+
     //settingで設定したものをAJAXリクエストで送信、成功したらAPIから'response'で返ってくる
     $.ajax(settings).done(function (response) {
       //responseデータは@graphというプロパティから取得して'result'に入れる
